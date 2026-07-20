@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 Big Bank Rewards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Quicksand', 'Segoe UI', sans-serif;
+        }
+        body {
+            background: #e6f4ff;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23b8e0ff' fill-opacity='0.4'%3E%3Cpath d='M30 30c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6zm18 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6zm-36 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            padding: 2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .flower-deco {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        h1 {
+            color: #2b6cb0;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+        }
+        .back-home {
+            display: inline-block;
+            background: #b8e0ff;
+            color: #1a5276;
+            padding: 0.6rem 1rem;
+            border-radius: 12px;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px #c0e0fb;
+        }
+        .lock-toggle-wrap {
+            margin-bottom: 1rem;
+            text-align: right;
+        }
+        #lockToggle {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 12px;
+            background: #74c2f2;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .edit-section {
+            margin-bottom: 1.5rem;
+        }
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #c0e0fb;
+            border-radius: 14px;
+            margin-bottom: 0.7rem;
+            font-size: 1rem;
+            background: #f7fbff;
+        }
+        .btn-add {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 14px;
+            background: #74c2f2;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .reward-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .list-item {
+            background: #e6f0ff;
+            padding: 0.9rem;
+            border-radius: 14px;
+            margin-bottom: 0.7rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .btn-redeem {
+            background: #805ad5;
+            color: white;
+            border: none;
+            padding: 0.5rem 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .btn-del {
+            background: #fc8181;
+            color: white;
+            border: none;
+            padding: 0.5rem 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-home">← Back Home</a>
+    <div class="flower-deco">🛍️ Big Long-Term Rewards 🛍️</div>
+    <h1>Spend Saved Bank Points (Shopping Trips, Outings)</h1>
+
+    <div class="card">
+        <div class="lock-toggle-wrap">
+            <button id="lockToggle" onclick="toggleLockList()">Lock List (Hide Edit Inputs)</button>
+        </div>
+
+        <div class="edit-section" id="editInputs">
+            <input type="text" id="bankRewardInput" placeholder="Big reward: Mall trip, Concert, New item">
+            <input type="number" id="bankCost" min="1" value="500" placeholder="Bank point cost">
+            <button class="btn-add" onclick="addBankReward()">Add Big Reward</button>
+        </div>
+
+        <div class="reward-list" id="bankRewardList"></div>
+    </div>
+
+    <script>
+        let bankPoints = parseInt(localStorage.getItem("bankPoints")) || 0;
+        let bankRewards = JSON.parse(localStorage.getItem("bankRewardData")) || [];
+        let listLocked = localStorage.getItem("bankRewardLocked") === "true";
+
+        function toggleLockList() {
+            listLocked = !listLocked;
+            localStorage.setItem("bankRewardLocked", listLocked);
+            renderLockState();
+        }
+
+        function renderLockState() {
+            const editWrap = document.getElementById("editInputs");
+            const toggleBtn = document.getElementById("lockToggle");
+            if (listLocked) {
+                editWrap.classList.add("hidden");
+                toggleBtn.textContent = "Unlock List (Show Edit Inputs)";
+            } else {
+                editWrap.classList.remove("hidden");
+                toggleBtn.textContent = "Lock List (Hide Edit Inputs)";
+            }
+        }
+
+        function addBankReward() {
+            const name = document.getElementById("bankRewardInput").value.trim();
+            const cost = parseInt(document.getElementById("bankCost").value);
+            if (!name || isNaN(cost) || cost < 1) return alert("Fill valid big reward & cost!");
+            bankRewards.push({ id: Date.now(), name, cost });
+            localStorage.setItem("bankRewardData", JSON.stringify(bankRewards));
+            renderBankRewards();
+            document.getElementById("bankRewardInput").value = "";
+            document.getElementById("bankCost").value = "500";
+        }
+
+        function redeemBankReward(id, cost) {
+            if (bankPoints < cost) return alert("Not enough saved bank points for this big reward!");
+            bankPoints -= cost;
+            localStorage.setItem("bankPoints", bankPoints);
+            deleteBankReward(id);
+            alert("🛍️ Big reward redeemed! Enjoy your shopping trip/treat!");
+        }
+
+        function deleteBankReward(id) {
+            bankRewards = bankRewards.filter(r => r.id !== id);
+            localStorage.setItem("bankRewardData", JSON.stringify(bankRewards));
+            renderBankRewards();
+        }
+
+        function renderBankRewards() {
+            const container = document.getElementById("bankRewardList");
+            container.innerHTML = bankRewards.length === 0 ? "<p style='text-align:center;color:#557;'>No big shopping/reward plans added yet!</p>" : "";
+            bankRewards.forEach(r => {
+                const div = document.createElement("div");
+                div.className = "list-item";
+                div.innerHTML = `
+                    <span>${r.name} (${r.cost} bank saved pts)</span>
+                    <div>
+                        <button class="btn-redeem" onclick="redeemBankReward(${r.id},${r.cost})">Redeem</button>
+                        <button class="btn-del" onclick="deleteBankReward(${r.id})">Delete</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        renderLockState();
+        renderBankRewards();
+    </script>
+</body>
+</html>
