@@ -3,318 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Activity Points & Long Term Reward Bank</title>
+    <title>🌸 Cute Point Tracker | Home</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Quicksand', 'Segoe UI', sans-serif;
         }
         body {
-            background: #f0f4f8;
+            background: #e6f4ff;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23b8e0ff' fill-opacity='0.4'%3E%3Cpath d='M30 30c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6zm18 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6zm-36 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             padding: 2rem;
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
         }
-        h1, h2, h3 {
-            color: #2d3748;
+        .flower-deco {
+            text-align: center;
+            font-size: 2.5rem;
             margin-bottom: 1rem;
         }
-        .balance-row {
+        h1 {
+            color: #2b6cb0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .balance-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px #c0e0fb;
+            margin-bottom: 1.5rem;
+        }
+        .daily-balance {
+            background: #b8e0ff;
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a5276;
+            margin-bottom: 1rem;
+        }
+        .bank-balance {
+            background: #d4eaff;
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #3b4e91;
+        }
+        .nav-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-top: 2rem;
         }
-        .daily-balance {
-            background: #3182ce;
+        .nav-btn {
+            display: block;
+            background: #90cdf4;
             color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            font-weight: 600;
+            text-decoration: none;
             text-align: center;
-        }
-        .bank-balance {
-            background: #805ad5;
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            font-size: 1.2rem;
+            padding: 1.2rem;
+            border-radius: 16px;
             font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 3px 8px #a0d4f7;
+            transition: 0.2s ease;
+        }
+        .nav-btn:hover {
+            background: #63b3ed;
+            transform: translateY(-3px);
+        }
+        .note-text {
             text-align: center;
+            margin-top: 2rem;
+            color: #4a7b9d;
+            font-size: 0.95rem;
         }
-        .container-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 1rem;
-        }
-        .card {
-            background: white;
-            padding: 1.8rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        .big-reward-card {
-            grid-column: 1 / -1;
-            background: #fefcbf;
-        }
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #cbd5e0;
-            border-radius: 6px;
-            margin-bottom: 0.8rem;
-            font-size: 1rem;
-        }
-        button {
-            padding: 0.7rem 1.2rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: opacity 0.2s;
-        }
-        button:hover { opacity: 0.9; }
-        .btn-add { background: #48bb78; color: white; }
-        .btn-complete { background: #667292; color: white; margin: 0.3rem; }
-        .btn-redeem-daily { background: #dd6b20; color: white; margin: 0.3rem; }
-        .btn-redeem-bank { background: #c53030; color: white; margin: 0.3rem; }
-        .btn-delete { background: #718096; color: white; margin: 0.3rem; }
-        .list-item {
-            padding: 0.8rem;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        .task-list, .daily-reward-list, .bank-reward-list {
-            margin-top: 1rem;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        @media (max-width:768px) {
-            .container-grid { grid-template-columns: 1fr; }
-            .balance-row { grid-template-columns: 1fr; }
+        @media (max-width:600px) {
+            .nav-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <h1>Daily Activity Tracker + Points Bank</h1>
-    <p style="margin-bottom:1rem;color:#4a5568;">Daily points reset every new day; leftover daily points transfer to permanent Points Bank for big rewards!</p>
+    <div class="flower-deco">🌸🌷💐</div>
+    <h1>Cute Daily Activity & Reward Bank</h1>
 
-    <!-- Two Balance Displays -->
-    <div class="balance-row">
-        <div class="daily-balance">
-            Today's Daily Points: <span id="dailyPoints">0</span>
-        </div>
-        <div class="bank-balance">
-            Saved Points Bank (Long Term): <span id="bankPoints">0</span>
-        </div>
+    <div class="balance-card">
+        <div class="daily-balance">Today's Daily Points: <span id="dailyPoints">0</span></div>
+        <div class="bank-balance">Saved Bank Points (Long Term): <span id="bankPoints">0</span></div>
     </div>
 
-    <div class="container-grid">
-        <!-- Left: Daily Activities -->
-        <div class="card">
-            <h2>Add Daily Activity</h2>
-            <input type="text" id="taskInput" placeholder="Task: Workout, Read, Study...">
-            <input type="number" id="taskPointValue" placeholder="Points earned on completion" min="1" value="10">
-            <button class="btn-add" onclick="addTask()">Add Activity</button>
-            <div class="task-list" id="taskList"></div>
-        </div>
-
-        <!-- Right: Small Daily Relax Rewards (Uses Daily Points) -->
-        <div class="card">
-            <h2>Small Daily Relax Rewards</h2>
-            <p style="font-size:0.9rem;color:#666;margin-bottom:0.8rem;">Redeem with today’s daily points</p>
-            <input type="text" id="dailyRewardInput" placeholder="Small reward: Movie, Snack, Game time">
-            <input type="number" id="dailyRewardCost" placeholder="Point cost" min="1" value="30">
-            <button class="btn-add" onclick="addDailyReward()">Add Daily Reward</button>
-            <div class="daily-reward-list" id="dailyRewardList"></div>
-        </div>
-
-        <!-- Full Width: Big Long-Term Rewards (Uses Bank Saved Points) -->
-        <div class="card big-reward-card">
-            <h2>Big Long-Term Rewards (Points Bank Only)</h2>
-            <p style="font-size:0.9rem;color:#666;margin-bottom:0.8rem;">Shopping trip, Day out, New item, Special treat</p>
-            <input type="text" id="bankRewardInput" placeholder="Big reward: Mall trip, Concert, New game">
-            <input type="number" id="bankRewardCost" placeholder="Bank point cost" min="1" value="500">
-            <button class="btn-add" onclick="addBankReward()">Add Big Reward</button>
-            <div class="bank-reward-list" id="bankRewardList"></div>
-        </div>
+    <div class="nav-grid">
+        <a href="tasks.html" class="nav-btn">📝 Daily To-Do Tasks</a>
+        <a href="daily-rewards.html" class="nav-btn">☁️ Small Relax Rewards</a>
+        <a href="bank-rewards.html" class="nav-btn" style="grid-column: 1/-1;">🛍️ Big Long-Term Rewards (Shopping Trips)</a>
     </div>
+
+    <p class="note-text">Daily unused points auto-save to bank every new day! Lock lists to hide edit inputs.</p>
 
     <script>
-        // Load saved data
-        const todayDate = new Date().toLocaleDateString();
-        let savedDate = localStorage.getItem("lastSavedDate") || "";
         let dailyPoints = parseInt(localStorage.getItem("dailyPoints")) || 0;
         let bankPoints = parseInt(localStorage.getItem("bankPoints")) || 0;
-        let tasks = JSON.parse(localStorage.getItem("taskData")) || [];
-        let dailyRewards = JSON.parse(localStorage.getItem("dailyRewardData")) || [];
-        let bankRewards = JSON.parse(localStorage.getItem("bankRewardData")) || [];
-
-        // Check if new day: transfer leftover daily points to bank, reset daily points
-        if (savedDate !== todayDate) {
-            bankPoints += dailyPoints;
-            dailyPoints = 0;
-            localStorage.setItem("lastSavedDate", todayDate);
-            saveAllPoints();
-            alert("New day detected! Yesterday's unused daily points moved to your Points Bank.");
-        }
-
-        // Initialize UI
-        updatePointDisplays();
-        renderTasks();
-        renderDailyRewards();
-        renderBankRewards();
-
-        // Save point values to storage
-        function saveAllPoints() {
-            localStorage.setItem("dailyPoints", dailyPoints);
-            localStorage.setItem("bankPoints", bankPoints);
-        }
-
-        // Update visual counters
-        function updatePointDisplays() {
-            document.getElementById("dailyPoints").textContent = dailyPoints;
-            document.getElementById("bankPoints").textContent = bankPoints;
-        }
-
-        // Add new daily task
-        function addTask() {
-            const name = document.getElementById("taskInput").value.trim();
-            const pts = parseInt(document.getElementById("taskPointValue").value);
-            if (!name || isNaN(pts) || pts < 1) return alert("Enter valid task and point number");
-            tasks.push({ id: Date.now(), name: name, points: pts });
-            localStorage.setItem("taskData", JSON.stringify(tasks));
-            renderTasks();
-            document.getElementById("taskInput").value = "";
-            document.getElementById("taskPointValue").value = "10";
-        }
-
-        // Complete task, add to TODAY'S daily points
-        function completeTask(taskId, earnPts) {
-            dailyPoints += earnPts;
-            saveAllPoints();
-            updatePointDisplays();
-            deleteTask(taskId);
-        }
-
-        function deleteTask(taskId) {
-            tasks = tasks.filter(t => t.id !== taskId);
-            localStorage.setItem("taskData", JSON.stringify(tasks));
-            renderTasks();
-        }
-
-        function renderTasks() {
-            const container = document.getElementById("taskList");
-            container.innerHTML = tasks.length === 0 ? "<p>No daily activities added yet.</p>" : "";
-            tasks.forEach(task => {
-                const div = document.createElement("div");
-                div.className = "list-item";
-                div.innerHTML = `
-                    <div>${task.name} (+${task.points} daily pts)</div>
-                    <div>
-                        <button class="btn-complete" onclick="completeTask(${task.id}, ${task.points})">Complete</button>
-                        <button class="btn-delete" onclick="deleteTask(${task.id})">Delete</button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // Daily small rewards logic (spend daily points)
-        function addDailyReward() {
-            const name = document.getElementById("dailyRewardInput").value.trim();
-            const cost = parseInt(document.getElementById("dailyRewardCost").value);
-            if (!name || isNaN(cost) || cost < 1) return alert("Fill valid reward and cost");
-            dailyRewards.push({ id: Date.now(), name: name, cost: cost });
-            localStorage.setItem("dailyRewardData", JSON.stringify(dailyRewards));
-            renderDailyRewards();
-            document.getElementById("dailyRewardInput").value = "";
-            document.getElementById("dailyRewardCost").value = "30";
-        }
-
-        function redeemDailyReward(rewardId, cost) {
-            if (dailyPoints < cost) return alert("Not enough TODAY'S daily points!");
-            dailyPoints -= cost;
-            saveAllPoints();
-            updatePointDisplays();
-            deleteDailyReward(rewardId);
-            alert(`Redeemed small reward! Spent ${cost} daily points.`);
-        }
-
-        function deleteDailyReward(rewardId) {
-            dailyRewards = dailyRewards.filter(r => r.id !== rewardId);
-            localStorage.setItem("dailyRewardData", JSON.stringify(dailyRewards));
-            renderDailyRewards();
-        }
-
-        function renderDailyRewards() {
-            const container = document.getElementById("dailyRewardList");
-            container.innerHTML = dailyRewards.length === 0 ? "<p>No small daily rewards yet.</p>" : "";
-            dailyRewards.forEach(r => {
-                const div = document.createElement("div");
-                div.className = "list-item";
-                div.innerHTML = `
-                    <div>${r.name} (Cost: ${r.cost} daily pts)</div>
-                    <div>
-                        <button class="btn-redeem-daily" onclick="redeemDailyReward(${r.id}, ${r.cost})">Redeem</button>
-                        <button class="btn-delete" onclick="deleteDailyReward(${r.id})">Delete</button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // Bank big rewards logic (spend permanent bank points)
-        function addBankReward() {
-            const name = document.getElementById("bankRewardInput").value.trim();
-            const cost = parseInt(document.getElementById("bankRewardCost").value);
-            if (!name || isNaN(cost) || cost < 1) return alert("Fill valid big reward and bank cost");
-            bankRewards.push({ id: Date.now(), name: name, cost: cost });
-            localStorage.setItem("bankRewardData", JSON.stringify(bankRewards));
-            renderBankRewards();
-            document.getElementById("bankRewardInput").value = "";
-            document.getElementById("bankRewardCost").value = "500";
-        }
-
-        function redeemBankReward(rewardId, cost) {
-            if (bankPoints < cost) return alert("Not enough saved bank points for this big reward!");
-            bankPoints -= cost;
-            saveAllPoints();
-            updatePointDisplays();
-            deleteBankReward(rewardId);
-            alert(`Big reward redeemed! Spent ${cost} bank points. Enjoy your treat!`);
-        }
-
-        function deleteBankReward(rewardId) {
-            bankRewards = bankRewards.filter(r => r.id !== rewardId);
-            localStorage.setItem("bankRewardData", JSON.stringify(bankRewards));
-            renderBankRewards();
-        }
-
-        function renderBankRewards() {
-            const container = document.getElementById("bankRewardList");
-            container.innerHTML = bankRewards.length === 0 ? "<p>No long-term big rewards added yet (e.g. shopping trip, day out).</p>" : "";
-            bankRewards.forEach(r => {
-                const div = document.createElement("div");
-                div.className = "list-item";
-                div.innerHTML = `
-                    <div>${r.name} (Cost: ${r.cost} bank saved pts)</div>
-                    <div>
-                        <button class="btn-redeem-bank" onclick="redeemBankReward(${r.id}, ${r.cost})">Redeem</button>
-                        <button class="btn-delete" onclick="deleteBankReward(${r.id})">Delete</button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
+        document.getElementById("dailyPoints").textContent = dailyPoints;
+        document.getElementById("bankPoints").textContent = bankPoints;
     </script>
 </body>
 </html>
