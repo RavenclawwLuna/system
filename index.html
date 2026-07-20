@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Cute Point Tracker | Home</title>
+    <title>Point Tracker Home</title>
     <style>
         * {
             margin: 0;
@@ -17,11 +17,27 @@
             padding: 2rem;
             max-width: 900px;
             margin: 0 auto;
+            position: relative;
+            overflow-x: hidden;
         }
-        .flower-deco {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+        /* Falling Snowflakes Animation */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: #ffffff;
+            font-size: 1rem;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 0;
+            animation: snowFall linear infinite;
+        }
+        @keyframes snowFall {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+        .content-wrap {
+            position: relative;
+            z-index: 2;
         }
         h1 {
             color: #2b6cb0;
@@ -89,27 +105,42 @@
     </style>
 </head>
 <body>
-    <div class="flower-deco"></div>
-    <h1>Cute Daily Activity & Reward Bank</h1>
+    <div class="content-wrap">
+        <h1>Daily Activity & Reward Bank Tracker</h1>
 
-    <div class="balance-card">
-        <div class="daily-balance">Today's Daily Points: <span id="dailyPoints">0</span></div>
-        <div class="bank-balance">Saved Bank Points (Long Term): <span id="bankPoints">0</span></div>
+        <div class="balance-card">
+            <div class="daily-balance">Today's Daily Points: <span id="dailyPoints">0</span></div>
+            <div class="bank-balance">Saved Bank Points (Long Term): <span id="bankPoints">0</span></div>
+        </div>
+
+        <div class="nav-grid">
+            <a href="tasks.html" class="nav-btn">Daily To-Do Tasks</a>
+            <a href="daily-rewards.html" class="nav-btn">Small Relax Rewards</a>
+            <a href="bank-rewards.html" class="nav-btn" style="grid-column: 1/-1;">Big Long-Term Rewards & Shopping</a>
+        </div>
+
+        <p class="note-text">Daily unused points automatically save to your point bank every new day. Lock lists to stop editing.</p>
     </div>
-
-    <div class="nav-grid">
-        <a href="tasks.html" class="nav-btn"> Daily To-Do Tasks</a>
-        <a href="daily-rewards.html" class="nav-btn">☁️ Small Relax Rewards</a>
-        <a href="bank-rewards.html" class="nav-btn" style="grid-column: 1/-1;"> Big Long-Term Rewards (Shopping Trips)</a>
-    </div>
-
-    <p class="note-text">Daily unused points auto-save to bank every new day! Lock lists to hide edit inputs.</p>
 
     <script>
+        // Snowflake Generator
+        function createSnowflake() {
+            const snow = document.createElement('div');
+            snow.classList.add('snowflake');
+            snow.textContent = '•';
+            snow.style.left = Math.random() * 100 + 'vw';
+            snow.style.fontSize = (Math.random() * 10 + 8) + 'px';
+            snow.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            document.body.appendChild(snow);
+            setTimeout(() => snow.remove(), 10000);
+        }
+        setInterval(createSnowflake, 200);
+
+        // Point Display
         let dailyPoints = parseInt(localStorage.getItem("dailyPoints")) || 0;
         let bankPoints = parseInt(localStorage.getItem("bankPoints")) || 0;
         document.getElementById("dailyPoints").textContent = dailyPoints;
         document.getElementById("bankPoints").textContent = bankPoints;
-    </script>
-</body>
-</html>
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
