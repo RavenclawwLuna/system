@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 Small Relax Rewards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Quicksand', 'Segoe UI', sans-serif;
+        }
+        body {
+            background: #e6f4ff;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23b8e0ff' fill-opacity='0.4'%3E%3Cpath d='M30 30c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6zm18 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6zm-36 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            padding: 2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .flower-deco {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        h1 {
+            color: #2b6cb0;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+        }
+        .back-home {
+            display: inline-block;
+            background: #b8e0ff;
+            color: #1a5276;
+            padding: 0.6rem 1rem;
+            border-radius: 12px;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px #c0e0fb;
+        }
+        .lock-toggle-wrap {
+            margin-bottom: 1rem;
+            text-align: right;
+        }
+        #lockToggle {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 12px;
+            background: #74c2f2;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .edit-section {
+            margin-bottom: 1.5rem;
+        }
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #c0e0fb;
+            border-radius: 14px;
+            margin-bottom: 0.7rem;
+            font-size: 1rem;
+            background: #f7fbff;
+        }
+        .btn-add {
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 14px;
+            background: #74c2f2;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .reward-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .list-item {
+            background: #f0f8ff;
+            padding: 0.9rem;
+            border-radius: 14px;
+            margin-bottom: 0.7rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .btn-redeem {
+            background: #ed8936;
+            color: white;
+            border: none;
+            padding: 0.5rem 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .btn-del {
+            background: #fc8181;
+            color: white;
+            border: none;
+            padding: 0.5rem 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-home">← Back Home</a>
+    <div class="flower-deco">☁️ Relax Small Rewards ☁️</div>
+    <h1>Daily Relax Activities (Use Today's Points)</h1>
+
+    <div class="card">
+        <div class="lock-toggle-wrap">
+            <button id="lockToggle" onclick="toggleLockList()">Lock List (Hide Edit Inputs)</button>
+        </div>
+
+        <div class="edit-section" id="editInputs">
+            <input type="text" id="rewardInput" placeholder="Small relax reward (Bubble bath, Game time)">
+            <input type="number" id="rewardCost" min="1" value="30" placeholder="Daily point cost">
+            <button class="btn-add" onclick="addReward()">Add Relax Reward</button>
+        </div>
+
+        <div class="reward-list" id="rewardList"></div>
+    </div>
+
+    <script>
+        let dailyPoints = parseInt(localStorage.getItem("dailyPoints")) || 0;
+        let dailyRewards = JSON.parse(localStorage.getItem("dailyRewardData")) || [];
+        let listLocked = localStorage.getItem("dailyRewardLocked") === "true";
+
+        function toggleLockList() {
+            listLocked = !listLocked;
+            localStorage.setItem("dailyRewardLocked", listLocked);
+            renderLockState();
+        }
+
+        function renderLockState() {
+            const editWrap = document.getElementById("editInputs");
+            const toggleBtn = document.getElementById("lockToggle");
+            if (listLocked) {
+                editWrap.classList.add("hidden");
+                toggleBtn.textContent = "Unlock List (Show Edit Inputs)";
+            } else {
+                editWrap.classList.remove("hidden");
+                toggleBtn.textContent = "Lock List (Hide Edit Inputs)";
+            }
+        }
+
+        function addReward() {
+            const name = document.getElementById("rewardInput").value.trim();
+            const cost = parseInt(document.getElementById("rewardCost").value);
+            if (!name || isNaN(cost) || cost < 1) return alert("Fill valid reward & cost!");
+            dailyRewards.push({ id: Date.now(), name, cost });
+            localStorage.setItem("dailyRewardData", JSON.stringify(dailyRewards));
+            renderRewards();
+            document.getElementById("rewardInput").value = "";
+            document.getElementById("rewardCost").value = "30";
+        }
+
+        function redeemReward(id, cost) {
+            if (dailyPoints < cost) return alert("Not enough daily points!");
+            dailyPoints -= cost;
+            localStorage.setItem("dailyPoints", dailyPoints);
+            deleteReward(id);
+            alert("🌸 Redeemed your relax reward!");
+        }
+
+        function deleteReward(id) {
+            dailyRewards = dailyRewards.filter(r => r.id !== id);
+            localStorage.setItem("dailyRewardData", JSON.stringify(dailyRewards));
+            renderRewards();
+        }
+
+        function renderRewards() {
+            const container = document.getElementById("rewardList");
+            container.innerHTML = dailyRewards.length === 0 ? "<p style='text-align:center;color:#557;'>No relax rewards added yet!</p>" : "";
+            dailyRewards.forEach(r => {
+                const div = document.createElement("div");
+                div.className = "list-item";
+                div.innerHTML = `
+                    <span>${r.name} (${r.cost} daily pts)</span>
+                    <div>
+                        <button class="btn-redeem" onclick="redeemReward(${r.id},${r.cost})">Redeem</button>
+                        <button class="btn-del" onclick="deleteReward(${r.id})">Delete</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        renderLockState();
+        renderRewards();
+    </script>
+</body>
+</html>
