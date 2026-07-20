@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Daily To-Do Tasks</title>
+    <title>Daily To-Do Tasks</title>
     <style>
         * {
             margin: 0;
@@ -17,11 +17,26 @@
             padding: 2rem;
             max-width: 700px;
             margin: 0 auto;
+            position: relative;
+            overflow-x: hidden;
         }
-        .flower-deco {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: #ffffff;
+            font-size: 1rem;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 0;
+            animation: snowFall linear infinite;
+        }
+        @keyframes snowFall {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+        .content-wrap {
+            position: relative;
+            z-index: 2;
         }
         h1 {
             color: #2b6cb0;
@@ -115,26 +130,30 @@
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-home">← Back Home</a>
-    <div class="flower-deco">🌼 Daily To-Do List 🌼</div>
-    <h1>Add & Complete Daily Activities</h1>
+    <div class="content-wrap">
+        <a href="index.html" class="back-home">← Back Home</a>
+        <h1>Daily To-Do Activities & Tasks</h1>
 
-    <div class="card">
-        <div class="lock-toggle-wrap">
-            <button id="lockToggle" onclick="toggleLockList()">Lock List (Hide Edit Inputs)</button>
+        <div class="card">
+            <div class="lock-toggle-wrap">
+                <button id="lockToggle" onclick="toggleLockList()">Lock List (Hide Edit Inputs)</button>
+            </div>
+
+            <div class="edit-section" id="editInputs">
+                <input type="text" id="taskInput" placeholder="Write your daily task">
+                <input type="number" id="taskPointValue" min="1" value="10" placeholder="Points earned when done">
+                <button class="btn-add" onclick="addTask()">Add New Task</button>
+            </div>
+
+            <div class="task-list" id="taskList"></div>
         </div>
-
-        <div class="edit-section" id="editInputs">
-            <input type="text" id="taskInput" placeholder="Write your daily task (e.g. Study, Exercise)">
-            <input type="number" id="taskPointValue" min="1" value="10" placeholder="Points earned when done">
-            <button class="btn-add" onclick="addTask()">Add New Task</button>
-        </div>
-
-        <div class="task-list" id="taskList"></div>
     </div>
 
     <script>
-        // Date reset system
+        // Snowfall
+        function createSnowflake(){const e=document.createElement("div");e.className="snowflake",e.textContent="•",e.style.left=Math.random()*100+"vw",e.style.fontSize=Math.random()*10+8+"px",e.style.animationDuration=Math.random()*5+5+"s",document.body.appendChild(e),setTimeout(()=>e.remove(),1e4)}setInterval(createSnowflake,200);
+
+        // Date Reset System
         const todayDate = new Date().toLocaleDateString();
         let savedDate = localStorage.getItem("lastSavedDate") || "";
         let dailyPoints = parseInt(localStorage.getItem("dailyPoints")) || 0;
@@ -142,14 +161,26 @@
         let tasks = JSON.parse(localStorage.getItem("taskData")) || [];
         let listLocked = localStorage.getItem("taskListLocked") === "true";
 
-        // New day transfer
+        // Preload default example tasks if empty
+        if(tasks.length === 0){
+            tasks = [
+                {id:1, name:"Read a book for 30 minutes", points:50},
+                {id:2, name:"Do 20 minutes exercise", points:40},
+                {id:3, name:"Study or do homework", points:60},
+                {id:4, name:"Clean personal space", points:30},
+                {id:5, name:"Drink 8 cups of water daily", points:20}
+            ];
+            localStorage.setItem("taskData", JSON.stringify(tasks));
+        }
+
+        // New day point transfer
         if (savedDate !== todayDate) {
             bankPoints += dailyPoints;
             dailyPoints = 0;
             localStorage.setItem("lastSavedDate", todayDate);
             localStorage.setItem("dailyPoints", dailyPoints);
             localStorage.setItem("bankPoints", bankPoints);
-            alert(" New day! Yesterday's unused points moved to bank.");
+            alert("New day started! Yesterday's unused points moved to your bank.");
         }
 
         function toggleLockList() {
@@ -195,7 +226,7 @@
 
         function renderTasks() {
             const container = document.getElementById("taskList");
-            container.innerHTML = tasks.length === 0 ? "<p style='text-align:center;color:#557;'>No tasks added yet!</p>" : "";
+            container.innerHTML = "";
             tasks.forEach(t => {
                 const div = document.createElement("div");
                 div.className = "list-item";
@@ -210,7 +241,6 @@
             });
         }
 
-        // Init
         renderLockState();
         renderTasks();
     </script>
