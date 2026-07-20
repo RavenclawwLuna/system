@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Big Bank Rewards</title>
+    <title>Big Bank Rewards</title>
     <style>
         * {
             margin: 0;
@@ -17,11 +17,26 @@
             padding: 2rem;
             max-width: 700px;
             margin: 0 auto;
+            position: relative;
+            overflow-x: hidden;
         }
-        .flower-deco {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: #ffffff;
+            font-size: 1rem;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 0;
+            animation: snowFall linear infinite;
+        }
+        @keyframes snowFall {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+        .content-wrap {
+            position: relative;
+            z-index: 2;
         }
         h1 {
             color: #2b6cb0;
@@ -115,28 +130,44 @@
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-home">← Back Home</a>
-    <div class="flower-deco"> Big Long-Term Rewards </div>
-    <h1>Spend Saved Bank Points (Shopping Trips, Outings)</h1>
+    <div class="content-wrap">
+        <a href="index.html" class="back-home">← Back Home</a>
+        <h1>Long Term Bank Rewards & Shopping Treats</h1>
 
-    <div class="card">
-        <div class="lock-toggle-wrap">
-            <button id="lockToggle" onclick="toggleLockList()">Lock List (Hide Edit Inputs)</button>
+        <div class="card">
+            <div class="lock-toggle-wrap">
+                <button id="lockToggle" onclick="toggleLockList()">Lock List (Hide Edit Inputs)</button>
+            </div>
+
+            <div class="edit-section" id="editInputs">
+                <input type="text" id="bankRewardInput" placeholder="Big reward / shopping treat">
+                <input type="number" id="bankCost" min="1" value="500" placeholder="Bank point cost">
+                <button class="btn-add" onclick="addBankReward()">Add Big Reward</button>
+            </div>
+
+            <div class="reward-list" id="bankRewardList"></div>
         </div>
-
-        <div class="edit-section" id="editInputs">
-            <input type="text" id="bankRewardInput" placeholder="Big reward: Mall trip, Concert, New item">
-            <input type="number" id="bankCost" min="1" value="500" placeholder="Bank point cost">
-            <button class="btn-add" onclick="addBankReward()">Add Big Reward</button>
-        </div>
-
-        <div class="reward-list" id="bankRewardList"></div>
     </div>
 
     <script>
+        // Snowfall
+        function createSnowflake(){const e=document.createElement("div");e.className="snowflake",e.textContent="•",e.style.left=Math.random()*100+"vw",e.style.fontSize=Math.random()*10+8+"px",e.style.animationDuration=Math.random()*5+5+"s",document.body.appendChild(e),setTimeout(()=>e.remove(),1e4)}setInterval(createSnowflake,200);
+
         let bankPoints = parseInt(localStorage.getItem("bankPoints")) || 0;
         let bankRewards = JSON.parse(localStorage.getItem("bankRewardData")) || [];
         let listLocked = localStorage.getItem("bankRewardLocked") === "true";
+
+        // Preload big example rewards
+        if(bankRewards.length === 0){
+            bankRewards = [
+                {id:1, name:"Small shopping trip", cost:800},
+                {id:2, name:"Buy new accessory / item", cost:1200},
+                {id:3, name:"Special day outing", cost:1500},
+                {id:4, name:"Fancy meal treat", cost:600},
+                {id:5, name:"Weekend relaxation break", cost:2000}
+            ];
+            localStorage.setItem("bankRewardData", JSON.stringify(bankRewards));
+        }
 
         function toggleLockList() {
             listLocked = !listLocked;
@@ -168,11 +199,11 @@
         }
 
         function redeemBankReward(id, cost) {
-            if (bankPoints < cost) return alert("Not enough saved bank points for this big reward!");
+            if (bankPoints < cost) return alert("Not enough saved bank points for this reward!");
             bankPoints -= cost;
             localStorage.setItem("bankPoints", bankPoints);
             deleteBankReward(id);
-            alert(" Big reward redeemed! Enjoy your shopping trip/treat!");
+            alert("Big reward redeemed! Enjoy your special treat.");
         }
 
         function deleteBankReward(id) {
@@ -183,12 +214,12 @@
 
         function renderBankRewards() {
             const container = document.getElementById("bankRewardList");
-            container.innerHTML = bankRewards.length === 0 ? "<p style='text-align:center;color:#557;'>No big shopping/reward plans added yet!</p>" : "";
+            container.innerHTML = "";
             bankRewards.forEach(r => {
                 const div = document.createElement("div");
                 div.className = "list-item";
                 div.innerHTML = `
-                    <span>${r.name} (${r.cost} bank saved pts)</span>
+                    <span>${r.name} (-${r.cost} bank pts)</span>
                     <div>
                         <button class="btn-redeem" onclick="redeemBankReward(${r.id},${r.cost})">Redeem</button>
                         <button class="btn-del" onclick="deleteBankReward(${r.id})">Delete</button>
