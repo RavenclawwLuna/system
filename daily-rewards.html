@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Small Relax Rewards</title>
+    <title>Small Relax Rewards</title>
     <style>
         * {
             margin: 0;
@@ -17,11 +17,26 @@
             padding: 2rem;
             max-width: 700px;
             margin: 0 auto;
+            position: relative;
+            overflow-x: hidden;
         }
-        .flower-deco {
-            text-align: center;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: #ffffff;
+            font-size: 1rem;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 0;
+            animation: snowFall linear infinite;
+        }
+        @keyframes snowFall {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+        .content-wrap {
+            position: relative;
+            z-index: 2;
         }
         h1 {
             color: #2b6cb0;
@@ -115,28 +130,44 @@
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-home">← Back Home</a>
-    <div class="flower-deco">☁️ Relax Small Rewards ☁️</div>
-    <h1>Daily Relax Activities (Use Today's Points)</h1>
+    <div class="content-wrap">
+        <a href="index.html" class="back-home">← Back Home</a>
+        <h1>Daily Relax Rewards (Spend Daily Points)</h1>
 
-    <div class="card">
-        <div class="lock-toggle-wrap">
-            <button id="lockToggle" onclick="toggleLockList()">Lock List (Hide Edit Inputs)</button>
+        <div class="card">
+            <div class="lock-toggle-wrap">
+                <button id="lockToggle" onclick="toggleLockList()">Lock List (Hide Edit Inputs)</button>
+            </div>
+
+            <div class="edit-section" id="editInputs">
+                <input type="text" id="rewardInput" placeholder="Small relax reward">
+                <input type="number" id="rewardCost" min="1" value="30" placeholder="Point cost">
+                <button class="btn-add" onclick="addReward()">Add Relax Reward</button>
+            </div>
+
+            <div class="reward-list" id="rewardList"></div>
         </div>
-
-        <div class="edit-section" id="editInputs">
-            <input type="text" id="rewardInput" placeholder="Small relax reward (Bubble bath, Game time)">
-            <input type="number" id="rewardCost" min="1" value="30" placeholder="Daily point cost">
-            <button class="btn-add" onclick="addReward()">Add Relax Reward</button>
-        </div>
-
-        <div class="reward-list" id="rewardList"></div>
     </div>
 
     <script>
+        // Snowfall
+        function createSnowflake(){const e=document.createElement("div");e.className="snowflake",e.textContent="•",e.style.left=Math.random()*100+"vw",e.style.fontSize=Math.random()*10+8+"px",e.style.animationDuration=Math.random()*5+5+"s",document.body.appendChild(e),setTimeout(()=>e.remove(),1e4)}setInterval(createSnowflake,200);
+
         let dailyPoints = parseInt(localStorage.getItem("dailyPoints")) || 0;
         let dailyRewards = JSON.parse(localStorage.getItem("dailyRewardData")) || [];
         let listLocked = localStorage.getItem("dailyRewardLocked") === "true";
+
+        // Preload example relax rewards
+        if(dailyRewards.length === 0){
+            dailyRewards = [
+                {id:1, name:"Watch one movie", cost:50},
+                {id:2, name:"One hour gaming time", cost:40},
+                {id:3, name:"Special snack treat", cost:30},
+                {id:4, name:"Listen to music break", cost:20},
+                {id:5, name:"Scroll social media freely", cost:35}
+            ];
+            localStorage.setItem("dailyRewardData", JSON.stringify(dailyRewards));
+        }
 
         function toggleLockList() {
             listLocked = !listLocked;
@@ -172,7 +203,7 @@
             dailyPoints -= cost;
             localStorage.setItem("dailyPoints", dailyPoints);
             deleteReward(id);
-            alert(" Redeemed your relax reward!");
+            alert("Reward redeemed successfully!");
         }
 
         function deleteReward(id) {
@@ -183,12 +214,12 @@
 
         function renderRewards() {
             const container = document.getElementById("rewardList");
-            container.innerHTML = dailyRewards.length === 0 ? "<p style='text-align:center;color:#557;'>No relax rewards added yet!</p>" : "";
+            container.innerHTML = "";
             dailyRewards.forEach(r => {
                 const div = document.createElement("div");
                 div.className = "list-item";
                 div.innerHTML = `
-                    <span>${r.name} (${r.cost} daily pts)</span>
+                    <span>${r.name} (-${r.cost} daily pts)</span>
                     <div>
                         <button class="btn-redeem" onclick="redeemReward(${r.id},${r.cost})">Redeem</button>
                         <button class="btn-del" onclick="deleteReward(${r.id})">Delete</button>
